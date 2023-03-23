@@ -52,7 +52,7 @@ class ModelDetails(Base):
 class SentimentResult(Base):
     __tablename__ = 'sentiment_results'
     id = Column(Integer, primary_key=True)
-    tweet_id = Column(Integer, ForeignKey('sentiment_strings.tweet_id'))
+    tweet_id = Column(BigInteger,primary_key=True)
     sentiment_result = Column(String)
     sentiment_score = Column(Integer)
     model_name_id = Column(Integer, ForeignKey('model_details.id'))
@@ -61,45 +61,45 @@ class SentimentResult(Base):
 # create the tables
 Base.metadata.create_all(engine)
 
-# # Get all SymbolConfig objects
-# symbols = session.query(SymbolConfig).all()
-# print(symbols)
+# Get all SymbolConfig objects
+symbols = session.query(SymbolConfig).all()
+print(symbols)
 
-# # Set the date range for tweets
-# since_date = datetime(2023, 3, 20, 0, 0, 0)
-# until_date = datetime(2023, 3, 21, 0, 0, 0) 
+# Set the date range for tweets
+since_date = datetime(2023, 3, 20, 0, 0, 0)
+until_date = datetime(2023, 3, 21, 0, 0, 0) 
 
-# for symbol in symbols:
-#     # Build query for snscrape library
-#     query = f"{symbol.name} lang:en since:{since_date.strftime('%Y-%m-%d')} until:{until_date.strftime('%Y-%m-%d')}"
+for symbol in symbols:
+    # Build query for snscrape library
+    query = f"{symbol.name} lang:en since:{since_date.strftime('%Y-%m-%d')} until:{until_date.strftime('%Y-%m-%d')}"
 
-#     # Initialize tweet counter
-#     tweet_count = 0
+    # Initialize tweet counter
+    tweet_count = 0
 
-#     for tweet in tw.TwitterSearchScraper(query).get_items():
-#         # Check if maximum tweet count is reached for this symbol
-#         if tweet_count >= 100:
-#             break
+    for tweet in tw.TwitterSearchScraper(query).get_items():
+        # Check if maximum tweet count is reached for this symbol
+        if tweet_count >= 100:
+            break
         
-#         # Check if tweet is a retweet or reply
-#         if not tweet.inReplyToUser and not tweet.retweetedTweet:
-#             # Build sentiment string
-#             sentiment_string = f"{tweet.content}"
-#             # Check if sentiment string already exists in database
-#             existing_sentiment = session.query(SentimentString).filter_by(tweet_id=tweet.id).first()
+        # Check if tweet is a retweet or reply
+        if not tweet.inReplyToUser and not tweet.retweetedTweet:
+            # Build sentiment string
+            sentiment_string = f"{tweet.content}"
+            # Check if sentiment string already exists in database
+            existing_sentiment = session.query(SentimentString).filter_by(tweet_id=tweet.id).first()
 
-#             if existing_sentiment:
-#                 # Update existing sentiment string
-#                 existing_sentiment.updated_date = datetime.now()
-#             else:
-#                 # Create new sentiment string with symbol config id
-#                 sentiment = SentimentString(symbol_config_id=symbol.id, strings=sentiment_string, data_date=tweet.date, tweet_id=tweet.id)
-#                 session.add(sentiment) # Add new sentiment string to session
+            if existing_sentiment:
+                # Update existing sentiment string
+                existing_sentiment.updated_date = datetime.now()
+            else:
+                # Create new sentiment string with symbol config id
+                sentiment = SentimentString(symbol_config_id=symbol.id, strings=sentiment_string, data_date=tweet.date, tweet_id=tweet.id)
+                session.add(sentiment) # Add new sentiment string to session
 
-#             # Increment tweet counter
-#             tweet_count += 1
+            # Increment tweet counter
+            tweet_count += 1
 
-#     print(f"Processed {tweet_count} tweets for {symbol.name}")
+    print(f"Processed {tweet_count} tweets for {symbol.name}")
 
 # commit the changes to the database
 session.commit()
