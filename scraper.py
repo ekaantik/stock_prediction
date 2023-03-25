@@ -66,8 +66,8 @@ symbols = session.query(SymbolConfig).all()
 print(symbols)
 
 # Set the date range for tweets
-since_date = datetime(2023, 3, 20, 0, 0, 0)
-until_date = datetime(2023, 3, 21, 0, 0, 0) 
+since_date = datetime(2023, 3, 21, 0, 0, 0)
+until_date = datetime(2023, 3, 23, 0, 0, 0) 
 
 for symbol in symbols:
     # Build query for snscrape library
