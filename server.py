@@ -36,7 +36,7 @@ def home():
 def process():
     pda = ast.literal_eval(request.data.decode("utf-8"))
 
-    import nb_new
+    import models.nb_new as nb_new
 
     # pd.set_option('display.max_columns', None)
 

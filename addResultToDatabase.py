@@ -26,7 +26,6 @@ url = "http://127.0.0.1:5000/po"
 payload = str(json_dict).encode('utf-8')
 headers = {"Content-Type": "application/json"}
 response = requests.request("POST", url, data=payload, headers=headers)
-print(type(response.json()))
 
 # Commit the changes and close the database connection
 conn.close()

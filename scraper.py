@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, BigInteger
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, BigInteger, Float
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm import declarative_base
 import snscrape.modules.twitter as tw 
@@ -22,7 +22,7 @@ class SymbolConfig(Base):
     __tablename__ = 'symbol_config'
     id = Column(Integer, primary_key=True)
     type = Column(Enum('stock', 'crypto', 'commodity', name='type_enum'))   
-    name = Column(String) 
+    name = Column(String, unique=True) 
     symbol_name = Column(String)
     subtype = Column(String)
     created_date = Column(DateTime, default=datetime.now)
@@ -58,6 +58,16 @@ class SentimentResult(Base):
     model_name_id = Column(Integer, ForeignKey('model_details.id'))
     created_date = Column(DateTime, default=datetime.now)
 
+# define the stock_sentiment_results table
+class StockSentimentResults(Base):
+    __tablename__ = 'stock_sentiment_results'
+    id = Column(Integer, primary_key=True)
+    stock_id = Column(Integer, ForeignKey('symbol_config.id'))
+    final_result = Column(Float)
+    time_from = Column(DateTime)
+    time_to = Column(DateTime)
+    created_date = Column(DateTime, default=datetime.now)
+
 # create the tables
 Base.metadata.create_all(engine)
 
@@ -66,8 +76,8 @@ symbols = session.query(SymbolConfig).all()
 print(symbols)
 
 # Set the date range for tweets
-since_date = datetime(2023, 3, 21, 0, 0, 0)
-until_date = datetime(2023, 3, 23, 0, 0, 0) 
+since_date = datetime(2023, 3, 23, 0, 0, 0)
+until_date = datetime(2023, 3, 26, 0, 0, 0) 
 
 for symbol in symbols:
     # Build query for snscrape library
