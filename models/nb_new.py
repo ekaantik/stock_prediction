@@ -5,11 +5,11 @@ import string
 import pickle
 
 # Load the pickled model from a file
-with open('cvnew.pkl', 'rb') as f:
+with open('models/cvnew.pkl', 'rb') as f:
     cv = pickle.load(f)
 
 # Load the pickled model from a file
-with open('nbnew.pkl', 'rb') as f:
+with open('models/nbnew.pkl', 'rb') as f:
     nb = pickle.load(f)
 
 

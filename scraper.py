@@ -28,7 +28,7 @@ class SymbolConfig(Base):
     created_date = Column(DateTime, default=datetime.now)
     updated_date = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     status = Column(Enum('enabled', 'disabled', name='status_enum'))
-    sentiment_strings = relationship("SentimentString", backref="symbol_config")#Consider this line if error occurs because of foreign key!!!
+    sentiment_strings = relationship("SentimentString", backref="symbol_config")
 
 # define the sentiment_strings table
 class SentimentString(Base):
@@ -53,6 +53,7 @@ class SentimentResult(Base):
     __tablename__ = 'sentiment_results'
     id = Column(Integer, primary_key=True)
     tweet_id = Column(BigInteger,primary_key=True)
+    symbol_config_id = Column(Integer, ForeignKey('symbol_config.id'))
     sentiment_result = Column(String)
     sentiment_score = Column(Integer)
     model_name_id = Column(Integer, ForeignKey('model_details.id'))
@@ -88,7 +89,7 @@ for symbol in symbols:
 
     for tweet in tw.TwitterSearchScraper(query).get_items():
         # Check if maximum tweet count is reached for this symbol
-        if tweet_count >= 100:
+        if tweet_count >= 500:
             break
         
         # Check if tweet is a retweet or reply

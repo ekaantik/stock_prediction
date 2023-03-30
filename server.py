@@ -1,31 +1,8 @@
-# import os
-# import logging
-# import sys
-#
-# import joblib
 import ast
 import pandas as pd
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
-
-# configure logging
-# log-level used on gunicorn CLI sets level only for the error logs, not for access logs
-# use that level for both the flask app logger and access logs
-# if __name__ != '__main__':
-#     gunicorn_error_logger = logging.getLogger('gunicorn.error')
-#     app.logger.handlers = gunicorn_error_logger.handlers
-#     app.logger.setLevel(gunicorn_error_logger.level)
-#     gunicorn_access_logger = logging.getLogger('gunicorn.access')
-#     gunicorn_access_logger.setLevel(gunicorn_error_logger.level)
-
-# Parse config
-# config = load_config()
-
-# Load serialized model instance
-# setattr(sys.modules["__main__"], "GuardinexModel", GuardinexModel)
-# model = joblib.load(config.modelpath)
-
 
 @app.route("/")
 def home():
