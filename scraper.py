@@ -17,7 +17,6 @@ session = Session()
 # create the base class for declarative models
 Base = declarative_base()
 
-
 # create the tables
 Base.metadata.create_all(engine)
 
@@ -66,8 +65,3 @@ session.commit()
 
 # close the session
 session.close()
-
-
-
-
-
