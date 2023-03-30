@@ -53,7 +53,7 @@ for model in models:
             
             if existing_record:
                 # Update the existing record
-                cur.execute("UPDATE sentiment_results SET sentiment_result = %s, sentiment_score = %s, created_date = %s, symbol_config_id = %s WHERE id = %s", (sentiment, sentiment_score, created_date, symbol_config_id))
+                cur.execute("UPDATE sentiment_results SET sentiment_result = %s, sentiment_score = %s, created_date = %s, symbol_config_id = %s WHERE id = %s", (sentiment, sentiment_score, created_date, symbol_config_id,existing_record[0]))
             else:
                 # Insert a new record
                 cur.execute("INSERT INTO sentiment_results (tweet_id, model_name_id, sentiment_result, sentiment_score, created_date, symbol_config_id) VALUES (%s, %s, %s, %s, %s, %s)", (tweet_id, model_id, sentiment, sentiment_score, created_date, symbol_config_id))
