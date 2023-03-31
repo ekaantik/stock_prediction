@@ -46,6 +46,7 @@ class SentimentResult(Base):
     sentiment_score = Column(Integer)
     model_name_id = Column(Integer, ForeignKey('model_details.id'))
     created_date = Column(DateTime, default=datetime.now)
+    symbol_config = relationship("SymbolConfig", backref="sentiment_results")
 
 # define the stock_sentiment_results table
 class StockSentimentResults(Base):
