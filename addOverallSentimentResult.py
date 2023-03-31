@@ -18,7 +18,7 @@ model_ids = [id for (id,) in session.query(ModelDetails.id).distinct()]
 threshold = 0.7
 
 time_from = datetime(2023, 3, 14, 0, 0, 0)
-time_to = datetime(2023, 3, 20, 0, 0, 0)
+time_to = datetime(2023, 3, 31, 0, 0, 0)
 
 # Loop over each stock and model to calculate the sentiment
 for stock_id in stock_ids:
@@ -43,8 +43,7 @@ for stock_id in stock_ids:
                 .filter(and_(SymbolConfig.id == stock_id,
                              SentimentResult.model_name_id == model_id,
                              SentimentString.data_date >= time_from,
-                             SentimentString.data_date < time_to,
-                             SentimentResult.sentiment_score >= threshold))\
+                             SentimentString.data_date < time_to))\
                 .all()
 
             # Calculate the counts for each sentiment result
@@ -52,14 +51,15 @@ for stock_id in stock_ids:
             negative_count = 0
             neutral_count = 0
             for sentiment_result, sentiment_score in sentiment_results:
-                if sentiment_result == 'positive':
+                if sentiment_result == 'positive'  and sentiment_score >= threshold:
                     positive_count += 1
-                elif sentiment_result == 'negative':
+                elif sentiment_result == 'negative' and sentiment_score >= threshold:
                     negative_count += 1
                 else:
                     neutral_count += 1
 
             total_count = positive_count + negative_count + neutral_count
+            print(total_count, positive_count, negative_count, neutral_count)
 
             # Determine the overall sentiment based on the counts
             if total_count == 0:
