@@ -1,9 +1,13 @@
 from datetime import datetime
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, BigInteger, Enum, Float
+from sqlalchemy import create_engine
 
 # create the base class for declarative models
 Base = declarative_base()
+
+# create the engine
+engine = create_engine('postgresql://postgres:postgres@localhost:5432/analysis')
 
 # define the symbol_config table
 class SymbolConfig(Base):
@@ -61,3 +65,16 @@ class StockSentimentResults(Base):
     created_date = Column(DateTime, default=datetime.now)
 
 
+# define the word_frequency table
+class WordFrequency(Base):
+    __tablename__ = 'word_frequency'
+    id = Column(Integer, primary_key=True)
+    symbol_config_id = Column(Integer, ForeignKey('symbol_config.id'))
+    word = Column(String)
+    word_count = Column(Integer)
+    time_from = Column(DateTime)
+    time_to = Column(DateTime)
+    created_date = Column(DateTime, default=datetime.now)
+
+# create the tables
+Base.metadata.create_all(engine)
