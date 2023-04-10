@@ -24,9 +24,17 @@ Base.metadata.create_all(engine)
 symbols = session.query(SymbolConfig).all()
 print(symbols)
 
+# prompt the user to enter the start and end dates
+start_date_str = input("Enter the start date in YYYY-MM-DD format: ")
+end_date_str = input("Enter the end date in YYYY-MM-DD format: ")
+
+# convert the user input into datetime objects
+start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
 # Set the date range for tweets
-since_date = datetime(2023, 3, 30, 0, 0, 0)
-until_date = datetime(2023, 3, 31, 0, 0, 0) 
+since_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+until_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0) 
 
 for symbol in symbols:
     # Build query for snscrape library

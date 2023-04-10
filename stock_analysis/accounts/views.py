@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
+from django.http import HttpResponse
 
 def home(request):
     return render(request,template_name='home.html')
@@ -34,5 +35,6 @@ def login(request):
 def logout(request):
     if request.method == 'POST':
         auth.logout(request)
-    return redirect('home')
+    return redirect('accounts/login.html')
+    # return redirect('home')
 
