@@ -1,11 +1,12 @@
-from django.shortcuts import  render, redirect
+from django.shortcuts import render, redirect
 from .forms import CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm
+
 
 def home(request):
-	return redirect(request,'home.html')
+    return render(request, 'home.html')
+
 
 def register(request):
 	form = CreateUserForm()
@@ -19,4 +20,5 @@ def register(request):
 	return render(request,'register.html',context)
 
 
-
+def login(request):
+    return render(request, 'login.html')
