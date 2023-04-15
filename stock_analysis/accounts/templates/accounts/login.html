@@ -1,32 +1,11 @@
-{% extends 'base.html' %}
 
-{% block content %}
-
-
-{% if error %}
-{{ error }}
-
-<br/>
-<br/>
-{% endif %}
-
-<h1>Login!</h1>
-
-<form method = "POST" action="{% url 'login' %}">
+<!--Login--> 
+<div class="container py-5">
+  <h1>Login</h1>
+  <form method="POST">
     {% csrf_token %}
-    username:
-    <br/>
-    <input type="text" name="username" />
-    <br/>
-    Password:
-    <br/>
-    <input type="password" name="password" />
-    <br/>
-    <input class ="btn btn-primary" type="submit" value= "Login" />
-    <br/>
-
-
-</form>
-
-
-{% endblock %}
+    {{ login_form }}
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+  <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+</div>

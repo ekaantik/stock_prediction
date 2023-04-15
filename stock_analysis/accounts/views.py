@@ -1,40 +1,20 @@
-from django.shortcuts import render,redirect
-from django.contrib.auth.models import User
-from django.contrib import auth
-from django.http import HttpResponse
+from django.shortcuts import  render, redirect
+from .forms import CreateUserForm
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
-    return render(request,template_name='home.html')
+	return redirect(request,'home.html')
 
 def register(request):
-    if request.method == "POST":
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                User.objects.get(username = request.POST['username'])
-                return render (request,'accounts/register.html', {'error':'Username is already taken!'})
-            except User.DoesNotExist:
-                user = User.objects.create_user(request.POST['username'],password=request.POST['password1'])
-                auth.login(request,user)
-                return redirect('home')
-        else:
-            return render (request,'accounts/register.html', {'error':'Password does not match!'})
-    else:
-        return render(request,'accounts/register.html')
+	form = CreateUserForm()
 
-def login(request):
-    if request.method == 'POST':
-        user = auth.authenticate(username=request.POST['username'],password = request.POST['password'])
-        if user is not None:
-            auth.login(request,user)
-            return redirect('home')
-        else:
-            return render (request,'accounts/login.html', {'error':'Username or password is incorrect!'})
-    else:
-        return render(request,'accounts/login.html')
+	if request.method == 'POST':
+		form = CreateUserForm(request.POST)
+		if form.is_valid():
+			form.save()
 
-def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-    return redirect('accounts/login.html')
-    # return redirect('home')
+	context = {'form':form}
+	return render(request,'accounts/register.html',context)
 
