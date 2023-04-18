@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, home, login, logout
+from .views import register, home, login, Logout
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -9,7 +9,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('register/', register, name='register'),
     path('login/', login, name='login'),
-    path('logout/', logout, name='logout'),
+    path('logout/', Logout, name='logout'),
 ]
 
 if settings.DEBUG:
