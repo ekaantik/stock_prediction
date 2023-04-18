@@ -23,6 +23,7 @@ def register(request):
             # check if the email already exists
             elif User.objects.filter(email=email).exists():
                 messages.error(request, "Email is already in use.")
+                messages.error(request, form.errors)
             else:
                 # validate the password strength
                 try:
@@ -39,9 +40,6 @@ def register(request):
             messages.error(request, form.errors)
     form = NewUserForm()
     return render(request=request, template_name="accounts/register.html", context={"form":form})
-
-
-
 
 def login(request):
     if request.method == "POST":
@@ -68,7 +66,6 @@ def login(request):
             messages.error(request, form.errors)
     form = AuthenticationForm()
     return render(request=request, template_name="accounts/login.html", context={"form":form})
-
 
 def Logout(request):
     return render(request,'accounts/logout.html')
