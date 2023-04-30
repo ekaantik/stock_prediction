@@ -19,7 +19,7 @@ model_ids = [id for (id,) in session.query(ModelDetails.id).distinct()]
 threshold = 0.7
 
 # Define a regular expression pattern to match the "YYYY-MM-DD" format
-date_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')       
+date_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')    
 
 # Prompt the user to enter the start date and validate the input
 while True:
@@ -136,6 +136,7 @@ else:
                         )
                         session.add(stock_sentiment_result)
 session.commit()
+session.close()
 
 
 

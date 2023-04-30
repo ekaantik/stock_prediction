@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 # create the engine
-engine = create_engine('postgresql://postgres:postgres@localhost:5432/analysis')
+engine = create_engine('postgresql+psycopg2://postgres:postgres@{}:5432/analysis'.format('stock-analysis'))
 
 # define the symbol_config table
 class SymbolConfig(Base):
@@ -50,6 +50,7 @@ class SentimentResult(Base):
     sentiment_score = Column(Integer)
     model_name_id = Column(Integer, ForeignKey('model_details.id'))
     created_date = Column(DateTime, default=datetime.now)
+    data_date = Column(DateTime, ForeignKey('sentiment_strings.data_date'))
     symbol_config = relationship("SymbolConfig", backref="sentiment_results")
 
 # define the stock_sentiment_results table
@@ -78,3 +79,5 @@ class WordFrequency(Base):
 
 # create the tables
 Base.metadata.create_all(engine)
+
+print('success!')

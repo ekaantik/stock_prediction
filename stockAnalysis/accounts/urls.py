@@ -1,15 +1,15 @@
 from django.urls import path
-from .views import register, home, login, Logout
+from .views import UserRegistrationView,UserLoginView,UserProfileView,UserChangePasswordView
 from django.conf import settings
 from django.conf.urls.static import static
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('register/', register, name='register'),
-    path('login/', login, name='login'),
-    path('logout/', Logout, name='logout'),
+    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('profile/', UserProfileView.as_view(), name='profile'),
+    path('changepassword/', UserChangePasswordView.as_view(), name='changepassword'),
 ]
 
 if settings.DEBUG:

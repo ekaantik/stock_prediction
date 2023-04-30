@@ -34,7 +34,7 @@ end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
 # Set the date range for tweets
 since_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-until_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0) 
+until_date = end_date.replace(hour=0, minute=0, second=0, microsecond=0)
 
 for symbol in symbols:
     # Build query for snscrape library

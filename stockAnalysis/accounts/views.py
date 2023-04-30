@@ -1,71 +1,58 @@
-from django.shortcuts import render, redirect
-from .forms import NewUserForm
-from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
+from rest_framework.response import Response
+from accounts.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePasswordSerializer
+from rest_framework.views import APIView
+from rest_framework import status
+from django.contrib.auth import authenticate
+from .renderers import UserRenderer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
-def home(request):
-    return render(request, 'accounts/home.html')
+#Generate token manually
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
 
-def register(request):
-    if request.method == "POST":
-        form = NewUserForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
-            # check if the username already exists
-            if User.objects.filter(username=username).exists():
-                messages.error(request, "Username is taken. Please choose another one.")
-                messages.error(request, form.errors)
-            # check if the email already exists
-            elif User.objects.filter(email=email).exists():
-                messages.error(request, "Email is already in use.")
-                messages.error(request, form.errors)
-            else:
-                # validate the password strength
-                try:
-                    validate_password(password)
-                except Exception as e:
-                    messages.error(request, e)
-                else:
-                    # create the new user
-                    form.save()
-                    messages.success(request, "Registration successful. Please Login from here!")
-                    return redirect("accounts:login")
-        else:
-            messages.error(request, "Invalid information. Please try again.")
-            messages.error(request, form.errors)
-    form = NewUserForm()
-    return render(request=request, template_name="accounts/register.html", context={"form":form})
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
-def login(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    # login(request)
-                    messages.success(request, f"Welcome back, {username}. You are now logged in.")
-                    return redirect("accounts:home")
-                else:
-                    messages.error(request, "Your account is not active.")
-                    messages.error(request, form.errors)
-            else:
-                # if username or password is incorrect
-                messages.error(request, "Invalid username or password.")
-                messages.error(request, form.errors)
-        else:
-            # if the form is not valid
-            messages.error(request, "Invalid username or password.")
-            messages.error(request, form.errors)
-    form = AuthenticationForm()
-    return render(request=request, template_name="accounts/login.html", context={"form":form})
+class UserRegistrationView(APIView):
+    renderer_classes = [UserRenderer]
+    def post(self, request, format=None):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            token = get_tokens_for_user(user)
+            return Response({'token':token,'msg':'User got registered successfully!'},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
 
-def Logout(request):
-    return render(request,'accounts/logout.html')
+
+class UserLoginView(APIView):
+  renderer_classes = [UserRenderer]
+  def post(self, request, format=None):
+    serializer = UserLoginSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    email = serializer.data.get('email')
+    password = serializer.data.get('password')
+    user = authenticate(email=email, password=password)
+    if user is not None:
+      token = get_tokens_for_user(user)
+      return Response({'token':token,'msg':'Login Success'}, status=status.HTTP_200_OK)   
+    else:
+      return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
+    
+class UserProfileView(APIView):
+  renderer_classes = [UserRenderer]
+  permission_classes = [IsAuthenticated]
+  def get(self, request, format=None):
+    serializer = UserProfileSerializer(request.user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+  
+class UserChangePasswordView(APIView):
+  renderer_classes = [UserRenderer]
+  permission_classes = [IsAuthenticated]
+  def post(self, request, format=None):
+    serializer = UserChangePasswordSerializer(data=request.data, context={'user':request.user})
+    serializer.is_valid(raise_exception=True)
+    return Response({'msg':'Password Changed Successfully'}, status=status.HTTP_200_OK)
