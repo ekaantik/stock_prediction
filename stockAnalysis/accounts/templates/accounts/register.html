@@ -1,0 +1,47 @@
+{% block content %}
+<!-- <h3>Register</h3>
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Register User">
+</form> -->
+
+<div class="container py-5">
+	{% include 'accounts/messages.html' %}
+	<form class="px-4 py-3" method="post" action="">
+		{% csrf_token %}
+	  <div class="mb-3">
+		<label>Username</label>
+		<!-- <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com"> -->
+		{{form.username}}
+	  </div>
+	  <div class="mb-3">
+		<label>Email</label>
+		<!-- <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password"> -->
+		{{form.email}}
+	  </div>
+	  <div class="mb-3">
+		<label>Password</label>
+		<!-- <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password"> -->
+		{{form.password1}}
+	  </div>
+	  <div class="mb-3">
+		<label>Confirm Password</label>
+		<!-- <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password"> -->
+		{{form.password2}}
+	  </div>
+	  <div class="mb-3">
+		<!-- <div class="form-check">
+		  <input type="checkbox" class="form-check-input" id="dropdownCheck">
+		  <label class="form-check-label" for="dropdownCheck">
+			Remember me
+		  </label>
+		</div> -->
+	  </div>
+	  <button type="submit" class="btn btn-primary">Register User</button>
+	</form>
+	<p>Already have an account?<a class="dropdown-item" href="{% url 'accounts:login' %}">Login here</a></p>
+	<!-- <a class="dropdown-item" href="#">Forgot password?</a> -->
+</div>
+
+{% endblock content %}
