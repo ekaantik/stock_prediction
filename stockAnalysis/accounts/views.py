@@ -16,6 +16,7 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
+
 class UserRegistrationView(APIView):
     renderer_classes = [UserRenderer]
     def post(self, request, format=None):
@@ -26,7 +27,6 @@ class UserRegistrationView(APIView):
             return Response({'token':token,'msg':'User got registered successfully!'},status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
-
 
 class UserLoginView(APIView):
   renderer_classes = [UserRenderer]
@@ -41,7 +41,8 @@ class UserLoginView(APIView):
       return Response({'token':token,'msg':'Login Success'}, status=status.HTTP_200_OK)   
     else:
       return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
-    
+
+
 class UserProfileView(APIView):
   renderer_classes = [UserRenderer]
   permission_classes = [IsAuthenticated]
@@ -49,6 +50,7 @@ class UserProfileView(APIView):
     serializer = UserProfileSerializer(request.user)
     return Response(serializer.data, status=status.HTTP_200_OK)
   
+
 class UserChangePasswordView(APIView):
   renderer_classes = [UserRenderer]
   permission_classes = [IsAuthenticated]
@@ -56,3 +58,17 @@ class UserChangePasswordView(APIView):
     serializer = UserChangePasswordSerializer(data=request.data, context={'user':request.user})
     serializer.is_valid(raise_exception=True)
     return Response({'msg':'Password Changed Successfully'}, status=status.HTTP_200_OK)
+  
+  
+class UserLogoutView(APIView):
+  permission_classes = [IsAuthenticated]
+
+  def post(self, request):
+    try:
+        refresh_token = request.data["refresh_token"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+    except Exception as e:
+        return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"success": "User successfully logged out."}, status=status.HTTP_200_OK)

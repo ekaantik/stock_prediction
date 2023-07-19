@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 # create the engine
-engine = create_engine('postgresql+psycopg2://postgres:postgres@{}:5432/analysis'.format('stock-analysis'))
+engine = create_engine('postgresql://postgres:postgres@localhost:5432/analysis')
 
 # define the symbol_config table
 class SymbolConfig(Base):
@@ -79,5 +79,3 @@ class WordFrequency(Base):
 
 # create the tables
 Base.metadata.create_all(engine)
-
-print('success!')

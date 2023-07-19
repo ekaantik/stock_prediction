@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_caching import Cache
-from datetime import datetime, timedelta
+from datetime import datetime
 from tables import WordFrequency
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -41,7 +41,7 @@ def get_top_5_words(stock_id, time_from, time_to):
 @app.route('/top_words/<int:stock_id>/<string:time_from>/<string:time_to>')
 def top_5_words(stock_id, time_from, time_to):
     time_from = datetime.strptime(time_from, '%Y-%m-%d').replace(hour=0, minute=0, second=0)
-    time_to = datetime.strptime(time_to, '%Y-%m-%d').replace(hour=0, minute=0, second=0) + timedelta(days=1)
+    time_to = datetime.strptime(time_to, '%Y-%m-%d').replace(hour=0, minute=0, second=0)
     top_words = get_top_5_words(stock_id, time_from, time_to)
     return jsonify({'top_words': top_words})
 

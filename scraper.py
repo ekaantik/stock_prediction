@@ -28,9 +28,16 @@ print(symbols)
 start_date_str = input("Enter the start date in YYYY-MM-DD format: ")
 end_date_str = input("Enter the end date in YYYY-MM-DD format: ")
 
-# convert the user input into datetime objects
-start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+# if no input provided for start and end dates, set them to the current day
+if not start_date_str:
+    start_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+else:
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+
+if not end_date_str:
+    end_date = datetime.now()
+else:
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
 # Set the date range for tweets
 since_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -45,7 +52,7 @@ for symbol in symbols:
 
     for tweet in tw.TwitterSearchScraper(query).get_items():
         # Check if maximum tweet count is reached for this symbol
-        if tweet_count >= 500:
+        if tweet_count >= 100:
             break
         
         # Check if tweet is a retweet or reply
