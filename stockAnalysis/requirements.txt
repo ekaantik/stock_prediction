@@ -1,8 +1,5 @@
 datetime
 sqlalchemy
-pandas
-flask
-snscrape
 psycopg2-binary
 requests
 django-prometheus
